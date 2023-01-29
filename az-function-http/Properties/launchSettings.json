@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "az_function_http": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7014",
+      "launchBrowser": false
+    }
+  }
+}
