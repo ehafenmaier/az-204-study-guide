@@ -1,2 +1,2 @@
-# AZ 204 Study Guide
-Personal study guide and notes for the Microsoft AZ 204 exam and certification
+# Azure Playground
+My source controlled playground for learning to develop cloud native solutions in Azure.
