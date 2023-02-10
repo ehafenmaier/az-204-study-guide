@@ -29,8 +29,8 @@ static async Task ProcessAsync(IConfiguration config)
     BlobServiceClient blobServiceClient = new BlobServiceClient(storageConectionString);
     
     // Create a new uniquely named container
-    var containerName = $"wtblob-{Guid.NewGuid()}";
-    
+    var containerName = "wtblob-" + Guid.NewGuid();
+
     // Create the container and get the container client
     BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(containerName);
     Console.WriteLine("A container named '{0}' has been created.", containerName);
