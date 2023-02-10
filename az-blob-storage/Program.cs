@@ -26,5 +26,16 @@ static async Task ProcessAsync(IConfiguration config)
     var storageConectionString = config.GetConnectionString("AzureStorage");
     
     // Create blob service client using storage connection string
-    var blobServiceClient = new BlobServiceClient(storageConectionString);
+    BlobServiceClient blobServiceClient = new BlobServiceClient(storageConectionString);
+    
+    // Create a new uniquely named container
+    var containerName = $"wtblob-{Guid.NewGuid()}";
+    
+    // Create the container and get the container client
+    BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(containerName);
+    Console.WriteLine("A container named '{0}' has been created.", containerName);
+    Console.WriteLine("Take a minute and verify in the portal."); 
+    Console.WriteLine("Next a file will be created and uploaded to the container.");
+    Console.WriteLine("Press 'Enter' to continue.");
+    Console.ReadLine();
 }
