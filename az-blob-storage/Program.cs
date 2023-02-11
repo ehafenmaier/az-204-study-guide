@@ -38,4 +38,29 @@ static async Task ProcessAsync(IConfiguration config)
     Console.WriteLine("Next a file will be created and uploaded to the container.");
     Console.WriteLine("Press 'Enter' to continue.");
     Console.ReadLine();
+    
+    // Create a local file in the ./data/ directory for uploading and downloading
+    var localPath = "./data/";
+    var fileName = "wtfile-" + Guid.NewGuid() + ".txt";
+    var localFilePath = Path.Combine(localPath, fileName);
+
+    // Write text to the file
+    await File.WriteAllTextAsync(localFilePath, "Hello, World!");
+
+    // Get a reference to the blob
+    BlobClient blobClient = containerClient.GetBlobClient(fileName);
+
+    Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
+
+    // Open the file and upload its data
+    await using (FileStream uploadFileStream = File.OpenRead(localFilePath))
+    {
+        await blobClient.UploadAsync(uploadFileStream);
+        uploadFileStream.Close();
+    }
+    
+
+    Console.WriteLine("\nThe file was uploaded. We'll verify by listing the blobs next.");
+    Console.WriteLine("Press 'Enter' to continue.");
+    Console.ReadLine();    
 }
