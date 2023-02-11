@@ -59,8 +59,49 @@ static async Task ProcessAsync(IConfiguration config)
         uploadFileStream.Close();
     }
     
-
     Console.WriteLine("\nThe file was uploaded. We'll verify by listing the blobs next.");
     Console.WriteLine("Press 'Enter' to continue.");
-    Console.ReadLine();    
+    Console.ReadLine();   
+    
+    // List blobs in the container
+    Console.WriteLine("Listing blobs...");
+    await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
+    {
+        Console.WriteLine("\t" + blobItem.Name);
+    }
+
+    Console.WriteLine("\nYou can also verify by looking inside the " + 
+                      "container in the portal." +
+                      "\nNext the blob will be downloaded with an altered file name.");
+    Console.WriteLine("Press 'Enter' to continue.");
+    Console.ReadLine();
+    
+    // Download the blob to a local file
+    // Append the string "DOWNLOADED" before the .txt extension 
+    string downloadFilePath = localFilePath.Replace(".txt", "DOWNLOADED.txt");
+
+    Console.WriteLine("\nDownloading blob to\n\t{0}\n", downloadFilePath);
+
+    // Download the blob's contents and save it to a file
+    BlobDownloadInfo download = await blobClient.DownloadAsync();
+
+    using (FileStream downloadFileStream = File.OpenWrite(downloadFilePath))
+    {
+        await download.Content.CopyToAsync(downloadFileStream);
+    }
+    
+    Console.WriteLine("\nLocate the local file in the data directory created earlier to verify it was downloaded.");
+    Console.WriteLine("The next step is to delete the container and local files.");
+    Console.WriteLine("Press 'Enter' to continue.");
+    Console.ReadLine();
+    
+    // Delete the container and clean up local files created
+    Console.WriteLine("\n\nDeleting blob container...");
+    await containerClient.DeleteAsync();
+
+    Console.WriteLine("Deleting the local source and downloaded files...");
+    File.Delete(localFilePath);
+    File.Delete(downloadFilePath);
+
+    Console.WriteLine("Finished cleaning up.");
 }
