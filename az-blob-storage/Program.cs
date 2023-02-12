@@ -5,28 +5,27 @@ using Microsoft.Extensions.Configuration;
 
 Console.WriteLine("Azure Blob Storage exercise\n");
 
-IConfiguration config = new ConfigurationBuilder()
-    
+IConfigurationRoot config = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddUserSecrets<Program>()
     .AddEnvironmentVariables()
     .Build();
 
+// Get storage connection string from configuration settings
+var storageConectionString = config.GetConnectionString("AzureStorage");
+
 // Run the examples asynchronously, wait for the results before proceeding
-ProcessAsync(config).GetAwaiter().GetResult();
+ProcessAsync(storageConectionString).GetAwaiter().GetResult();
 
 Console.WriteLine("Press enter to exit the sample application.");
 Console.ReadLine();
 
 
-static async Task ProcessAsync(IConfiguration config)
+static async Task ProcessAsync(string? storageConnectionString)
 {
-    // Get storage connection string from configuration settings
-    var storageConectionString = config.GetConnectionString("AzureStorage");
-    
     // Create blob service client using storage connection string
-    BlobServiceClient blobServiceClient = new BlobServiceClient(storageConectionString);
+    BlobServiceClient blobServiceClient = new BlobServiceClient(storageConnectionString);
     
     // Create a new uniquely named container
     var containerName = "wtblob-" + Guid.NewGuid();
