@@ -1,9 +1,21 @@
-﻿namespace az_msal_auth;
+﻿using Microsoft.Extensions.Configuration;
 
-class Program
+namespace az_msal_auth;
+
+public class Program
 {
-    static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        var config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddUserSecrets<Program>()
+            .AddEnvironmentVariables()
+            .Build();
+
+        var tenantId = config["MSAL:TenantId"];
+        var clientId = config["MSAL:ClientId"];
+
+        Console.WriteLine("Tenant ID: {0}", tenantId);
+        Console.WriteLine("Client ID: {0}", clientId);
     }
 }
